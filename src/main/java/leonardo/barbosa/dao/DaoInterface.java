@@ -10,8 +10,8 @@ public interface DaoInterface {
 
     List<Object> listar();
 
-    Object buscarPorId(int id);
+    Object buscarPorId(Long id);
 
-    boolean deletar(int id);
+    boolean deletar(Long id);
 
 }

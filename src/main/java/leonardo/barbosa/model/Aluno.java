@@ -2,15 +2,15 @@ package leonardo.barbosa.model;
 
 public class Aluno {
 
-    private int id;
-    private int ra;
+    private Long id;
+    private Long ra;
     private String name;
     private String cpf;
-    private int evento_id;
+    private Long evento_id;
 
     public Aluno(){}
 
-    public Aluno(int id, int ra, String name, String cpf, int evento_id) {
+    public Aluno(Long id, Long ra, String name, String cpf, Long evento_id) {
         this.id = id;
         this.ra = ra;
         this.name = name;
@@ -18,19 +18,19 @@ public class Aluno {
         this.evento_id = evento_id;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public int getRa() {
+    public Long getRa() {
         return ra;
     }
 
-    public void setRa(int ra) {
+    public void setRa(Long ra) {
         this.ra = ra;
     }
 
@@ -50,11 +50,11 @@ public class Aluno {
         this.cpf = cpf;
     }
 
-    public int getEvento_id() {
+    public Long getEvento_id() {
         return evento_id;
     }
 
-    public void setEvento_id(int evento_id) {
+    public void setEvento_id(Long evento_id) {
         this.evento_id = evento_id;
     }
 
@@ -68,5 +68,4 @@ public class Aluno {
                 ", evento_id=" + evento_id +
                 '}';
     }
-
 }

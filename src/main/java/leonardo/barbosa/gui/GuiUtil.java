@@ -4,12 +4,14 @@ import java.awt.*;
 
 public interface GuiUtil {
 
-    default GridBagConstraints montarGrid(int coluna, int linha, int i, int i1) {
-        var constraints = new GridBagConstraints();
-        constraints.insets = new Insets(5, 5, 5, 5);
-        constraints.gridx = coluna;
-        constraints.gridy = linha;
-        return constraints;
+    default GridBagConstraints montarGrid(int x, int y, int w, int h) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx      = x;
+        gbc.gridy      = y;
+        gbc.gridwidth  = w;
+        gbc.gridheight = h;
+        gbc.insets     = new Insets(5, 5, 5, 5);
+        gbc.anchor     = GridBagConstraints.CENTER;
+        return gbc;
     }
-
 }

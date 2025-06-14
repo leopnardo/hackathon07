@@ -3,6 +3,8 @@ package leonardo.barbosa.dao;
 import leonardo.barbosa.model.Aluno;
 import leonardo.barbosa.model.Eventos;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -15,24 +17,28 @@ public class EventosDao extends Dao implements DaoInterface {
     @Override
     public boolean salvar(Object entity) {
         try {
-            var evento = (Eventos) entity;
+            Eventos evento = (Eventos) entity;
 
-            String sqlInsert = "insert into evento(title, start, end, speaker, curriculum, theme, photo) values(?, ?, ?, ?, ?, ?, ?)";
+            String sqlInsert = """
+            INSERT INTO eventos(title, start, end, speaker, curriculum, theme, photo)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """;
 
-            var ps = getConnection().prepareStatement(sqlInsert);
-            ps.setString(1, evento.getTitle());
-            ps.setTimestamp(2, Timestamp.valueOf(evento.getStart()));
-            System.out.println("Data Início: " + evento.getStart());
-            ps.setTimestamp(3, Timestamp.valueOf(evento.getEnd()));
-            System.out.println("Data Fim: " + evento.getStart());
-            ps.setString(4, evento.getSpeaker());
-            ps.setString(5, evento.getCurriculum());
-            ps.setString(6, evento.getPhoto());
-            ps.execute();
-
-            return true;
-        }catch (Exception e) {
-            System.out.println("Erro ao salvar evento" + e.getMessage());
+            try (PreparedStatement ps = getConnection().prepareStatement(sqlInsert)) {
+                ps.setString(1, evento.getTitle());
+                ps.setTimestamp(2, Timestamp.valueOf(evento.getStart()));
+                System.out.println("Data Início: " + evento.getStart());
+                ps.setTimestamp(3, Timestamp.valueOf(evento.getEnd()));
+                System.out.println("Data Fim: " + evento.getEnd());
+                ps.setString(4, evento.getSpeaker());
+                ps.setString(5, evento.getCurriculum());
+                ps.setString(6, evento.getTheme());
+                ps.setString(7, evento.getPhoto());
+                ps.execute();
+                return true;
+            }
+        } catch (Exception e) {
+            System.err.println("Erro ao salvar evento: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -41,23 +47,29 @@ public class EventosDao extends Dao implements DaoInterface {
     @Override
     public boolean atualizar(Object entity) {
         try {
-            var evento  = (Eventos) entity;
+            Eventos evento = (Eventos) entity;
 
-            String sqlUpdate = "UPDATE eventos SET title=?, start=?, end=?, speaker=?, curriculum=?, theme=?, photo=? WHERE id=?";
+            String sqlUpdate = """
+            UPDATE eventos
+            SET title = ?, start = ?, end = ?, speaker = ?, curriculum = ?, theme = ?, photo = ?
+            WHERE id = ?
+        """;
+            try (PreparedStatement ps = getConnection().prepareStatement(sqlUpdate)) {
+                ps.setString(1, evento.getTitle());
+                ps.setTimestamp(2, Timestamp.valueOf(evento.getStart()));
+                ps.setTimestamp(3, evento.getEnd() != null ? Timestamp.valueOf(evento.getEnd()) : null);
+                ps.setString(4, evento.getSpeaker());
+                ps.setString(5, evento.getCurriculum());
+                ps.setString(6, evento.getTheme());
+                ps.setString(7, evento.getPhoto());
+                ps.setLong(8, evento.getId());
 
-            var ps = getConnection().prepareStatement(sqlUpdate);
-            ps.setString(1,evento.getTitle());
-            ps.setTimestamp(2,Timestamp.valueOf(evento.getStart()));
-            ps.setTimestamp(3,Timestamp.valueOf(evento.getStart()));
-            ps.setString(4, evento.getSpeaker());
-            ps.setString(5, evento.getCurriculum());
-            ps.setString(6, evento.getTheme());
-            ps.setString(7, evento.getPhoto());
-            ps.execute();
+                int rowsAffected = ps.executeUpdate();
+                return rowsAffected > 0;
+            }
 
-            return true;
         } catch (Exception e) {
-            System.out.println("Erro ao atualizar evento" + e.getMessage());
+            System.err.println("Erro ao atualizar evento: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -65,65 +77,67 @@ public class EventosDao extends Dao implements DaoInterface {
 
     @Override
     public List<Object> listar() {
-        List<Eventos> eventos = new ArrayList<>();
+        List<Object> eventos = new ArrayList<>();
 
-        try {
-            var resultSet = getConnection()
-                    .prepareStatement("SELECT * FROM eventos")
-                    .executeQuery();
+        String sql = "SELECT * FROM eventos";
 
-            while (resultSet.next()) {
+        try (PreparedStatement ps = getConnection().prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
 
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
-                var evento = new Eventos(
-                        resultSet.getLong("id"),
-                        resultSet.getString("titulo"),
-                        LocalDateTime.parse(resultSet.getString("data_inicio"), formatter),
-                        LocalDateTime.parse(resultSet.getString("data_fim"), formatter),
-                        resultSet.getString("palestrante"),
-                        resultSet.getString("curriculo"),
-                        resultSet.getString("tema"),
-                        resultSet.getString("imagem")
+            while (rs.next()) {
+                Eventos evento = new Eventos(
+                        rs.getLong("id"),
+                        rs.getString("title"),
+                        rs.getTimestamp("start").toLocalDateTime(),
+                        rs.getTimestamp("end") != null ? rs.getTimestamp("end").toLocalDateTime() : null,
+                        rs.getString("speaker"),
+                        rs.getString("curriculum"),
+                        rs.getString("theme"),
+                        rs.getString("photo")
                 );
 
                 eventos.add(evento);
             }
-
-            resultSet.close();
-
         } catch (Exception e) {
-            System.out.println("Erro ao listar eventos: " + e.getMessage());
+            System.err.println("Erro ao listar eventos: " + e.getMessage());
+            e.printStackTrace();
         }
-        return new ArrayList<>(eventos);
+        return eventos;
 
     }
 
     @Override
     public Object buscarPorId(Long id) {
-        var evento = new Eventos();
+        Eventos evento = null;
 
-        try {
-            String sql = "SELECT * FROM eventos WHERE id = ?";
-            var ps = getConnection().prepareStatement(sql);
+        String sql = "SELECT * FROM eventos WHERE id = ?";
+
+        try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
             ps.setLong(1, id);
-            var rs = ps.executeQuery();
 
-            if (rs.next()) {
-                evento.setId(rs.getLong("id"));
-                evento.setTitle(rs.getString("titulo"));
-                evento.setStart(rs.getTimestamp("data_inicio").toLocalDateTime());
-                evento.setEnd(rs.getTimestamp("data_fim").toLocalDateTime());
-                evento.setSpeaker(rs.getString("palestrante"));
-                evento.setCurriculum(rs.getString("curriculo"));
-                evento.setTheme(rs.getString("tema"));
-                evento.setPhoto(rs.getString("imagem"));
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    evento = new Eventos();
+                    evento.setId(rs.getLong("id"));
+                    evento.setTitle(rs.getString("title"));
+                    evento.setStart(rs.getTimestamp("start").toLocalDateTime());
+
+                    if (rs.getTimestamp("end") != null) {
+                        evento.setEnd(rs.getTimestamp("end").toLocalDateTime());
+                    } else {
+                        evento.setEnd(null);
+                    }
+
+                    evento.setSpeaker(rs.getString("speaker"));
+                    evento.setCurriculum(rs.getString("curriculum"));
+                    evento.setTheme(rs.getString("theme"));
+                    evento.setPhoto(rs.getString("photo"));
+                }
             }
 
-            rs.close();
-
         } catch (Exception e) {
-            System.out.println("Erro ao buscar evento por ID: " + e.getMessage());
+            System.err.println("Erro ao buscar evento por ID: " + e.getMessage());
+            e.printStackTrace();
         }
 
         return evento;
@@ -135,7 +149,7 @@ public class EventosDao extends Dao implements DaoInterface {
             String sqlDelete = "DELETE FROM eventos WHERE id = ?";
             var ps = getConnection().prepareStatement(sqlDelete);
             ps.setLong(1, id);
-            ps.execute();
+            ps.executeUpdate();
             return true;
 
         } catch (Exception e) {

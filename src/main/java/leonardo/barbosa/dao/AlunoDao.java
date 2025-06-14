@@ -37,7 +37,6 @@ public class AlunoDao extends Dao implements DaoInterface{
     @Override
     public List<Object> listar() {
         List<Aluno> alunos = new ArrayList<>();
-
         try {
             var resultSet = getConnection()
                     .prepareStatement("select * from aluno")

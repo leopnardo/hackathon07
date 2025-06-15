@@ -261,13 +261,11 @@ public class EventosGui extends JFrame implements GuiUtil {
             return;
         }
 
-        // Defina as colunas que quer mostrar
         String[] colunas = {
                 "ID", "Título", "Data Início", "Data Fim",
                 "Palestrante", "Currículo", "Tema", "Imagem"
         };
 
-        // Crie o modelo da tabela e adicione as linhas
         DefaultTableModel model = new DefaultTableModel(colunas, 0);
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         for (Eventos e : eventos) {
@@ -283,7 +281,7 @@ public class EventosGui extends JFrame implements GuiUtil {
             });
         }
 
-        // Crie a JTable e coloque num JScrollPane
+
         JTable tabela = new JTable(model);
         tabela.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         for (int i = 0; i < colunas.length; i++) {
@@ -292,7 +290,6 @@ public class EventosGui extends JFrame implements GuiUtil {
         JScrollPane scroll = new JScrollPane(tabela);
         scroll.setPreferredSize(new Dimension(800, 300));
 
-        // Mostra num dialog mais amigável
         JOptionPane.showMessageDialog(this, scroll,
                 "Lista de Eventos", JOptionPane.INFORMATION_MESSAGE);
     }

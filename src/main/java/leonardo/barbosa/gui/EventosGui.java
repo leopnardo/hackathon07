@@ -30,6 +30,7 @@ public class EventosGui extends JFrame implements GuiUtil {
     private JButton btExcluir;
     private JButton btEditar;
     private JButton btSelecionarImagem;
+    private JButton btLimpar;
 
     private JTable tabela;
 
@@ -94,7 +95,7 @@ public class EventosGui extends JFrame implements GuiUtil {
         jPanel.add(btSalvar, montarGrid(0, y, 1, 1));
 
         btListar = new JButton("Listar");
-        btListar.addActionListener(e -> tabela.setModel(carregarEventos()));
+        btListar.addActionListener(this::listarEventos);
         jPanel.add(btListar, montarGrid(1, y, 1, 1));
 
         btExcluir = new JButton("Excluir");
@@ -104,6 +105,12 @@ public class EventosGui extends JFrame implements GuiUtil {
         btEditar = new JButton("Editar");
         btEditar.addActionListener(this::editarEvento);
         jPanel.add(btEditar, montarGrid(3, y, 1, 1));
+
+        btLimpar = new JButton("Novo");
+        btLimpar.addActionListener(this::limparCampos);
+        jPanel.add(btLimpar, montarGrid(4, y, 1, 1));
+
+
 
         return jPanel;
     }
@@ -190,7 +197,7 @@ public class EventosGui extends JFrame implements GuiUtil {
 
             if (ok) {
                 JOptionPane.showMessageDialog(this, "Salvo com sucesso!");
-                limparCampos();
+                limparCampos(actionEvent);
                 tabela.setModel(carregarEventos());
             } else {
                 JOptionPane.showMessageDialog(this, "Erro ao salvar.", "Erro",
@@ -218,7 +225,7 @@ public class EventosGui extends JFrame implements GuiUtil {
             boolean ok = eventoService.deletarEvento(eventoSelecionadoId);
             if (ok) {
                 JOptionPane.showMessageDialog(this, "Evento excluído!");
-                limparCampos();
+                limparCampos(actionEvent);
                 tabela.setModel(carregarEventos());
             } else {
                 JOptionPane.showMessageDialog(this, "Erro ao excluir.", "Erro",
@@ -228,7 +235,7 @@ public class EventosGui extends JFrame implements GuiUtil {
     }
 
 
-    private void limparCampos() {
+    private void limparCampos(ActionEvent actionEvent) {
         eventoSelecionadoId = null;
         tfTitulo.setText("");
         tfDataInicio.setText("");
@@ -245,6 +252,52 @@ public class EventosGui extends JFrame implements GuiUtil {
             tfImagemPath.setText(chooser.getSelectedFile().getName());
         }
     }
+
+    private void listarEventos(ActionEvent actionEvent){
+        List<Eventos> eventos = eventoService.listarBD();
+        if (eventos.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Nenhum evento encontrado.",
+                    "Lista de Eventos", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        // Defina as colunas que quer mostrar
+        String[] colunas = {
+                "ID", "Título", "Data Início", "Data Fim",
+                "Palestrante", "Currículo", "Tema", "Imagem"
+        };
+
+        // Crie o modelo da tabela e adicione as linhas
+        DefaultTableModel model = new DefaultTableModel(colunas, 0);
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        for (Eventos e : eventos) {
+            model.addRow(new Object[] {
+                    e.getId(),
+                    e.getTitle(),
+                    e.getStart().format(fmt),
+                    e.getEnd() != null ? e.getEnd().format(fmt) : "",
+                    e.getSpeaker(),
+                    e.getCurriculum(),
+                    e.getTheme(),
+                    e.getPhoto()
+            });
+        }
+
+        // Crie a JTable e coloque num JScrollPane
+        JTable tabela = new JTable(model);
+        tabela.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        for (int i = 0; i < colunas.length; i++) {
+            tabela.getColumnModel().getColumn(i).setPreferredWidth(120);
+        }
+        JScrollPane scroll = new JScrollPane(tabela);
+        scroll.setPreferredSize(new Dimension(800, 300));
+
+        // Mostra num dialog mais amigável
+        JOptionPane.showMessageDialog(this, scroll,
+                "Lista de Eventos", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+
 
 
     public static void main(String[] args) {

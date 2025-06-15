@@ -1,10 +1,14 @@
 package leonardo.barbosa.gui;
 
+import leonardo.barbosa.service.AlunoService;
+import leonardo.barbosa.service.EventoService;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
 public class PrincipalGui extends JFrame implements GuiUtil {
+
 
     private JPanel telaInicialPanel;
     private JMenuBar menuBar;
@@ -25,12 +29,11 @@ public class PrincipalGui extends JFrame implements GuiUtil {
         telaInicialPanel = new JPanel(new GridBagLayout());
         telaInicialPanel.setBackground(Color.WHITE);
 
-        // Título
         JLabel titulo = new JLabel("Bem-vindo ao Sistema UniALFA", SwingConstants.CENTER);
         titulo.setFont(new Font("Segoe UI", Font.BOLD, 22));
         titulo.setForeground(new Color(33, 102, 153));
 
-        // Botão Entrar
+
         JButton btnEntrar = new JButton("Entrar no Sistema");
         btnEntrar.setFont(new Font("Arial", Font.PLAIN, 16));
         btnEntrar.setBackground(new Color(33, 102, 153));
@@ -40,11 +43,16 @@ public class PrincipalGui extends JFrame implements GuiUtil {
         btnEntrar.addActionListener(e -> iniciarSistema());
 
         btnEntrar.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent e) { btnEntrar.setBackground(new Color(21, 71, 107)); }
-            public void mouseExited (java.awt.event.MouseEvent e) { btnEntrar.setBackground(new Color(33, 102, 153)); }
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                btnEntrar.setBackground(new Color(21, 71, 107));
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                btnEntrar.setBackground(new Color(33, 102, 153));
+            }
         });
 
-        // Botão Sair
+
         JButton btnSair = new JButton("Sair");
         btnSair.setFont(new Font("Arial", Font.PLAIN, 16));
         btnSair.setBackground(new Color(237, 40, 57));
@@ -54,61 +62,57 @@ public class PrincipalGui extends JFrame implements GuiUtil {
         btnSair.addActionListener(e -> System.exit(0));
 
         btnSair.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent e) { btnSair.setBackground(new Color(180, 30, 40)); }
-            public void mouseExited (java.awt.event.MouseEvent e) { btnSair.setBackground(new Color(237, 40, 57)); }
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                btnSair.setBackground(new Color(180, 30, 40));
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                btnSair.setBackground(new Color(237, 40, 57));
+            }
         });
 
-        // Logo (agora só pra exibir na tela inicial, mas depois ocuparemos todo fundo)
-        ImageIcon logo = new ImageIcon(getClass().getResource("/imagem/unialfa.png"));
-        JLabel logoLabel = new JLabel(logo);
 
-        telaInicialPanel.add(titulo,     montarGrid(0, 0, 1, 1));
-        telaInicialPanel.add(btnEntrar,  montarGrid(0, 1, 1, 1));
-        telaInicialPanel.add(btnSair,    montarGrid(0, 2, 1, 1));
-        telaInicialPanel.add(logoLabel,  montarGrid(0, 3, 1, 1));
+        ImageIcon imagem = new ImageIcon(getClass().getResource("/imagem/unialfa.png"));
+        JLabel logoLabel = new JLabel(imagem);
+
+        telaInicialPanel.add(titulo, montarGrid(0, 0, 1, 1));
+        telaInicialPanel.add(btnEntrar, montarGrid(0, 1, 1, 1));
+        telaInicialPanel.add(btnSair, montarGrid(0, 2, 1, 1));
+        telaInicialPanel.add(logoLabel, montarGrid(0, 3, 1, 1));
 
         add(telaInicialPanel, BorderLayout.CENTER);
     }
 
     private void iniciarSistema() {
-        // 1) remove a tela inicial
         remove(telaInicialPanel);
         telaInicialPanel = null;
 
-        // 2) cria um painel que desenha a imagem esticada em TODO o fundo
+
         ImageIcon icon = new ImageIcon(getClass().getResource("/imagem/unialfa.png"));
         BackgroundPanel bg = new BackgroundPanel(icon.getImage());
         bg.setLayout(new BorderLayout());
 
-        // 3) troca o content pane
         setContentPane(bg);
 
-        // 4) monta a barra de menus normalmente
         menuBar = montarMenuBar();
         setJMenuBar(menuBar);
-
-        // 5) se você tiver um painel central do sistema, adicione aqui:
-        //    bg.add(seuPainelPrincipal, BorderLayout.CENTER);
-
         revalidate();
         repaint();
     }
 
-    // --- Métodos de menu (sem alteração) --- //
-
     private JMenuBar montarMenuBar() {
-        var mb = new JMenuBar();
-        mb.add(montarMenuCad());
-        mb.add(montarMenuRel());
-        mb.add(montarMenuConfig());
-        return mb;
+        var menuConfig = new JMenuBar();
+        menuConfig.add(montarMenuCad());
+        menuConfig.add(montarMenuRel());
+        menuConfig.add(montarMenuConfig());
+        return menuConfig;
     }
 
     private JMenu montarMenuConfig() {
         var menu = new JMenu("Config.");
-        var miSobre   = new JMenuItem("Sobre");
-        var miEquipe  = new JMenuItem("Equipe");
-        var miSair    = new JMenuItem("Sair");
+        var miSobre = new JMenuItem("Sobre");
+        var miEquipe = new JMenuItem("Equipe");
+        var miSair = new JMenuItem("Sair");
 
         menu.add(miSobre);
         menu.add(miEquipe);
@@ -124,6 +128,8 @@ public class PrincipalGui extends JFrame implements GuiUtil {
         miEquipe.setFont(new Font("Arial", Font.PLAIN, 14));
         miSair.setFont(new Font("Arial", Font.PLAIN, 14));
         return menu;
+
+
     }
 
     private static JMenu montarMenuRel() {
@@ -137,39 +143,40 @@ public class PrincipalGui extends JFrame implements GuiUtil {
 
     private JMenu montarMenuCad() {
         var menu = new JMenu("Cadastros");
-        var miEvento      = new JMenuItem("Cadastrar eventos");
-        var miPalestrante = new JMenuItem("Palestrantes");
-        var miAluno       = new JMenuItem("Alunos");
+        var miEvento = new JMenuItem("Cadastrar eventos");
 
         menu.add(miEvento);
-        menu.add(miPalestrante);
-        menu.add(miAluno);
+
 
         menu.setFont(new Font("Arial", Font.PLAIN, 16));
         miEvento.setFont(new Font("Arial", Font.PLAIN, 14));
-        miPalestrante.setFont(new Font("Arial", Font.PLAIN, 14));
-        miAluno.setFont(new Font("Arial", Font.PLAIN, 14));
+
+        miEvento.addActionListener(this::abrirEventosGui);
+
         return menu;
     }
 
-    private void exibirSobre(ActionEvent e) {
+    private void exibirSobre(ActionEvent actionEvent) {
         JOptionPane.showMessageDialog(this, """
-            Equipe Hackathon
-            Somos a Equipe 7 do hackathon Unialfa! Decidimos solucionar o verdadeiro problema da faculdade...
-        """);
+                    Equipe Hackathon
+                    "Somos a Equipe 7 do hackathon Unialfa! Decidimos solucionar o verdadeiro problema da faculdade, trazendo a melhor solução possível para atender a instituição! 
+                    Assim sentamos e fizemos todo o planejamento para nos alinharmos e entendermos cada ponto.
+                    Identificamos diversas falhas no sistema! Estamos propondo possíveis melhorias para proporcionar a melhor experiência possível. 
+                    Cada ponto foi pensado na usabilidade, desde o back office até o front end.
+                """);
     }
 
-    private void exibirEquipe(ActionEvent e) {
+    private void exibirEquipe(ActionEvent actionEvent) {
         JOptionPane.showMessageDialog(this, """
-            Equipe Hackathon
-            Leonardo Dos Santos Barbosa
-            Claudio Roberto Vieira Filho 
-            Isabely Novais Dalava
-            Gabriel De Abreu da Silva
-        """);
+                    Equipe Hackathon
+                    Leonardo Dos Santos Barbosa
+                    Claudio Roberto Vieira Filho 
+                    Isabely Novais Dalava
+                    Gabriel De Abreu da Silva
+                """);
     }
 
-    private void exit(ActionEvent e) {
+    private void exit(ActionEvent actionEvent) {
         int result = JOptionPane.showConfirmDialog(
                 this,
                 "Deseja realmente sair?",
@@ -180,4 +187,10 @@ public class PrincipalGui extends JFrame implements GuiUtil {
             System.exit(0);
         }
     }
+
+    private void abrirEventosGui(ActionEvent actionEvent) {
+        var gui = new EventosGui();
+        gui.setVisible(true);
+    }
+
 }

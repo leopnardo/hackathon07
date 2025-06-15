@@ -1,11 +1,13 @@
 package leonardo.barbosa.dao;
 
 import leonardo.barbosa.model.Aluno;
+import leonardo.barbosa.model.AlunoEventos;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AlunoDao extends Dao implements DaoInterface{
+public class AlunoDao extends Dao implements DaoInterface {
 
 
     @Override
@@ -84,6 +86,34 @@ public class AlunoDao extends Dao implements DaoInterface{
 
         return aluno;
     }
+
+    public List<AlunoEventos> contarAlunosPorEvento() {
+
+        var sqlRequest = """
+                    SELECT evento_id,
+                           COUNT(*) AS total
+                      FROM aluno
+                     GROUP BY evento_id
+                     ORDER BY evento_id
+                """;
+
+        List<AlunoEventos> lista = new ArrayList<>();
+        try (var conn = getConnection();
+             var ps = conn.prepareStatement(sqlRequest);
+             var rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                lista.add(new AlunoEventos(
+                        rs.getLong("evento_id"),
+                        rs.getInt("total")
+                ));
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao contar alunos por evento", e);
+        }
+        return lista;
+    }
+
 
     @Override
     public boolean deletar(Long id) {

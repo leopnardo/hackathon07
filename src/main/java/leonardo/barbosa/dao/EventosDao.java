@@ -20,9 +20,9 @@ public class EventosDao extends Dao implements DaoInterface {
             Eventos evento = (Eventos) entity;
 
             String sqlInsert = """
-            INSERT INTO eventos(title, start, end, speaker, curriculum, theme, photo)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-            """;
+                    INSERT INTO eventos(title, start, end, speaker, curriculum, theme, photo)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                    """;
 
             try (PreparedStatement ps = getConnection().prepareStatement(sqlInsert)) {
                 ps.setString(1, evento.getTitle());
@@ -50,10 +50,10 @@ public class EventosDao extends Dao implements DaoInterface {
             Eventos evento = (Eventos) entity;
 
             String sqlUpdate = """
-            UPDATE eventos
-            SET title = ?, start = ?, end = ?, speaker = ?, curriculum = ?, theme = ?, photo = ?
-            WHERE id = ?
-        """;
+                        UPDATE eventos
+                        SET title = ?, start = ?, end = ?, speaker = ?, curriculum = ?, theme = ?, photo = ?
+                        WHERE id = ?
+                    """;
             try (PreparedStatement ps = getConnection().prepareStatement(sqlUpdate)) {
                 ps.setString(1, evento.getTitle());
                 ps.setTimestamp(2, Timestamp.valueOf(evento.getStart()));

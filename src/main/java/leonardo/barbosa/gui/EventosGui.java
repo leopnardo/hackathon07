@@ -111,7 +111,6 @@ public class EventosGui extends JFrame implements GuiUtil {
         jPanel.add(btLimpar, montarGrid(4, y, 1, 1));
 
 
-
         return jPanel;
     }
 
@@ -253,7 +252,7 @@ public class EventosGui extends JFrame implements GuiUtil {
         }
     }
 
-    private void listarEventos(ActionEvent actionEvent){
+    private void listarEventos(ActionEvent actionEvent) {
         List<Eventos> eventos = eventoService.listarBD();
         if (eventos.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Nenhum evento encontrado.",
@@ -269,7 +268,7 @@ public class EventosGui extends JFrame implements GuiUtil {
         DefaultTableModel model = new DefaultTableModel(colunas, 0);
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         for (Eventos e : eventos) {
-            model.addRow(new Object[] {
+            model.addRow(new Object[]{
                     e.getId(),
                     e.getTitle(),
                     e.getStart().format(fmt),
@@ -293,9 +292,6 @@ public class EventosGui extends JFrame implements GuiUtil {
         JOptionPane.showMessageDialog(this, scroll,
                 "Lista de Eventos", JOptionPane.INFORMATION_MESSAGE);
     }
-
-
-
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(EventosGui::new);

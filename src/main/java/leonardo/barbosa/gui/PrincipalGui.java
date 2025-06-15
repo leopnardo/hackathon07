@@ -132,13 +132,18 @@ public class PrincipalGui extends JFrame implements GuiUtil {
 
     }
 
-    private static JMenu montarMenuRel() {
-        var menu = new JMenu("Relatórios");
-        var mi = new JMenuItem("Alunos por Evento");
-        menu.add(mi);
+    private JMenu montarMenuRel() {
+        JMenu menu = new JMenu("Relatórios");
         menu.setFont(new Font("Arial", Font.PLAIN, 16));
-        mi.setFont(new Font("Arial", Font.PLAIN, 14));
+
+        JMenuItem alunoEvento = new JMenuItem("Alunos por Evento");
+        alunoEvento.setFont(new Font("Arial", Font.PLAIN, 14));
+        alunoEvento.addActionListener(this::abrirAlunosGui);
+
+        menu.add(alunoEvento);
         return menu;
+
+
     }
 
     private JMenu montarMenuCad() {
@@ -190,6 +195,11 @@ public class PrincipalGui extends JFrame implements GuiUtil {
 
     private void abrirEventosGui(ActionEvent actionEvent) {
         var gui = new EventosGui();
+        gui.setVisible(true);
+    }
+
+    private void abrirAlunosGui(ActionEvent actionEvent) {
+        var gui = new AlunoGui();
         gui.setVisible(true);
     }
 

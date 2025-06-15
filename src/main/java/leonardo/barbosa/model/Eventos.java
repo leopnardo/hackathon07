@@ -13,7 +13,8 @@ public class Eventos {
     private String theme;
     private String photo;
 
-    public Eventos() {}
+    public Eventos() {
+    }
 
     public Eventos(Long id, String title, LocalDateTime start, LocalDateTime end, String speaker, String curriculum, String theme, String photo) {
         this.id = id;

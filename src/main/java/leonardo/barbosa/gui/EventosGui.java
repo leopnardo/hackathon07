@@ -103,7 +103,7 @@ public class EventosGui extends JFrame implements GuiUtil {
 
         btEditar = new JButton("Editar");
         btEditar.addActionListener(this::editarEvento);
-        jPanel.add(btEditar, montarGrid(3, y++, 1, 1));
+        jPanel.add(btEditar, montarGrid(3, y, 1, 1));
 
         return jPanel;
     }

@@ -6,7 +6,7 @@ public interface DaoInterface {
 
     boolean salvar(Object entity);
 
-    boolean atualizar (Object entity);
+    boolean atualizar(Object entity);
 
     List<Object> listar();
 

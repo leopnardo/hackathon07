@@ -8,7 +8,8 @@ public class Aluno {
     private String cpf;
     private Long evento_id;
 
-    public Aluno(){}
+    public Aluno() {
+    }
 
     public Aluno(Long id, Long ra, String name, String cpf, Long evento_id) {
         this.id = id;

@@ -10,7 +10,7 @@ import java.util.List;
 
 public class EventoService {
 
-    public boolean salvarBD(Eventos eventos){
+    public boolean salvarBD(Eventos eventos) {
         var dao = new EventosDao();
         return dao.salvar(eventos);
     }
@@ -33,24 +33,6 @@ public class EventoService {
         var dao = new EventosDao();
         return dao.deletar(id);
     }
-
-    public String listar() {
-        var dao = new EventosDao();
-
-        StringBuilder result = new StringBuilder();
-        for (Object evento : dao.listar()) {
-            result.append("\n").append(evento);
-        }
-        return result.toString();
-    }
-
-    public List<Aluno> listarAlunoPorEvento(){
-        AlunoDao AlunoDao = new AlunoDao();
-        List<Aluno> alunos = new ArrayList<>();
-        AlunoDao.listar().forEach(obj -> alunos.add((Aluno)obj));
-        return alunos;
-    }
-
 
 
 }

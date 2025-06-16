@@ -1,0 +1,117 @@
+.modal-title {
+	font-size: 1.3em;
+	font-weight: 800;
+}
+
+h4 {
+	font-size: 1.1em;
+	font-weight: 800;
+}
+
+h5 {
+	font-size: 1em;
+	font-weight: 800;
+}
+
+thead {
+	font-weight: 900;
+	background: #ddd;
+}
+
+.header.curso {
+	padding: 150px 0 200px;
+	margin-bottom: 50px;
+}
+
+.header.curso h1 {
+	font-size: 3em;
+	line-height: 30px;
+	text-transform: uppercase;
+}
+
+.header.curso h2 {
+	font-size: 1.5em;
+	color: #fff;
+	text-shadow: 1px 1px 2px #000;
+}
+
+.btn-curso {
+	width: 100%;
+	text-align: center;
+	padding: 10px;
+	color: #fff;
+	width: 100%;
+	font-size: 1.2em;
+}
+
+.egressos {
+	margin: 50px 0 0 0;
+	padding: 50px 0;
+	background: #f1f1f1;
+}
+
+.div-graduacao .curso p {
+	margin: 10px 0;
+}
+
+.atuacao .coluna {
+	padding: 10px 45px !important;
+}
+
+.atuacao .coluna p {
+	margin: 25px 0;
+}
+
+.atuacao .coluna p strong {
+	font-size: 1.2em;
+}
+
+#tarja {
+	width: 100%;
+	float: left;
+	padding: 20px 0 0px;
+	margin: 50px 0;
+	color: #fff;
+}
+
+.margem {
+	padding: 50px 0;
+}
+
+.egressos .empresa {
+	border: 1px solid #ccc;
+	background: #fff;
+	padding: 10px;
+	margin: 10px 0;
+}
+
+.egressos .empresa p {
+	font-size: 0.8em;
+	height: 35px;
+	line-height: 20px;
+}
+
+#tarja .item {
+	width: 20%;
+	float: left;
+	padding: 0px;
+	box-sizing: border-box;
+}
+
+#tarja .item p {
+	margin: 15px;
+	line-height: 20px;
+}
+
+#tarja .item p {
+  font-size: 0.75em;
+}
+
+#tarja .item a {
+  color: #FFF;
+}
+
+
+#tarja .item p strong {
+  font-size: 1em;
+}
